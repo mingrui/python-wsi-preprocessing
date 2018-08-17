@@ -26,13 +26,13 @@ import PIL
 from PIL import Image
 import re
 import sys
-from deephistopath.wsi import util
-from deephistopath.wsi.util import Time
+import util
+from util import Time
 
-BASE_DIR = os.path.join(".", "data")
+BASE_DIR = os.path.join("/media/disk2", "TUPAC16")
 # BASE_DIR = os.path.join(os.sep, "Volumes", "BigData", "TUPAC")
 TRAIN_PREFIX = "TUPAC-TR-"
-SRC_TRAIN_DIR = os.path.join(BASE_DIR, "training_slides")
+SRC_TRAIN_DIR = os.path.join(BASE_DIR, "training_image_data")
 SRC_TRAIN_EXT = "svs"
 DEST_TRAIN_SUFFIX = ""  # Example: "train-"
 DEST_TRAIN_EXT = "png"
