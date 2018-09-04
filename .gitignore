@@ -8,3 +8,4 @@ docs/_site
 **/filters*.html
 **/tiles*.html
 /IDH_sample
+.ipynb_checkpoints
