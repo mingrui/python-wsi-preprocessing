@@ -9,3 +9,4 @@ docs/_site
 **/tiles*.html
 /IDH_sample
 .ipynb_checkpoints
+patch*
