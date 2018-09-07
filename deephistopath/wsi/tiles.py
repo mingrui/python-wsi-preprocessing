@@ -18,7 +18,7 @@
 # NumPy image.
 import matplotlib
 
-matplotlib.use('Agg')
+# matplotlib.use('Agg')
 
 import colorsys
 import math
@@ -58,8 +58,8 @@ FADED_MEDIUM_COLOR = (255, 255, 128)
 FADED_LOW_COLOR = (255, 210, 128)
 FADED_NONE_COLOR = (255, 128, 128)
 
-FONT_PATH = "/Library/Fonts/Arial Bold.ttf"
-SUMMARY_TITLE_FONT_PATH = "/Library/Fonts/Courier New Bold.ttf"
+FONT_PATH = "/usr/share/fonts/truetype/msttcorefonts/Arial_Bold.ttf"
+SUMMARY_TITLE_FONT_PATH = "/usr/share/fonts/truetype/msttcorefonts/Courier_New_Bold.ttf"
 SUMMARY_TITLE_TEXT_COLOR = (0, 0, 0)
 SUMMARY_TITLE_TEXT_SIZE = 24
 SUMMARY_TILE_TEXT_COLOR = (255, 255, 255)

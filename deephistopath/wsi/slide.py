@@ -26,10 +26,12 @@ import PIL
 from PIL import Image
 import re
 import sys
-import deephistopath.wsi.util
+import deephistopath.wsi.util as util
 from deephistopath.wsi.util import Time
 
-BASE_DIR = os.path.join("/media/disk2", "TUPAC16")
+BASE_DIR = os.path.join(
+    "/media/disk1/mingrui-projects/python-wsi-preprocessing",
+    "IDH_sample")
 # BASE_DIR = os.path.join(os.sep, "Volumes", "BigData", "TUPAC")
 TRAIN_PREFIX = "TUPAC-TR-"
 SRC_TRAIN_DIR = os.path.join(BASE_DIR, "training_image_data")
@@ -807,9 +809,9 @@ def small_to_large_mapping(small_pixel, large_dimensions):
     """
     small_x, small_y = small_pixel
     large_w, large_h = large_dimensions
-    large_x = round((large_w / SCALE_FACTOR) /
+    large_x = round((large_w / SCALE_FACTOR) / \
                     math.floor(large_w / SCALE_FACTOR) * (SCALE_FACTOR * small_x))
-    large_y = round((large_h / SCALE_FACTOR) /
+    large_y = round((large_h / SCALE_FACTOR) / \
                     math.floor(large_h / SCALE_FACTOR) * (SCALE_FACTOR * small_y))
     return large_x, large_y
 
@@ -835,6 +837,32 @@ def training_slide_to_image(slide_number):
     thumbnail_path = get_training_thumbnail_path(
         slide_number, large_w, large_h, new_w, new_h)
     save_thumbnail(img, THUMBNAIL_SIZE, thumbnail_path)
+
+
+def convert_slide_to_image(slide_path, slide_number):
+    """
+    Convert a WSI training slide to a saved scaled-down image in a format such as jpg or png.
+
+    Args:
+      slide_number: The slide number.
+    """
+
+    img, large_w, large_h, new_w, new_h = show_scaled_slide_image(
+        slide_path)
+
+    img_path = get_training_image_path(
+        slide_number, large_w, large_h, new_w, new_h)
+    print("Saving image to: " + img_path)
+    print(os.path.exists(DEST_TRAIN_DIR))
+    if not os.path.exists(DEST_TRAIN_DIR):
+        os.makedirs(DEST_TRAIN_DIR)
+    img.save(img_path)
+
+    thumbnail_path = get_training_thumbnail_path(
+        slide_number, large_w, large_h, new_w, new_h)
+    save_thumbnail(img, THUMBNAIL_SIZE, thumbnail_path)
+
+    return img_path
 
 
 def slide_to_scaled_pil_image(slide_number):
@@ -1231,6 +1259,25 @@ def slide_info(display_all_properties=False):
 
     t.elapsed_display()
 
+
+def single_slide_info(slide_filepath):
+    slide = open_slide(slide_filepath)
+    print("Level count: %d" % slide.level_count)
+    print("Level dimensions: " + str(slide.level_dimensions))
+    print("Level downsamples: " + str(slide.level_downsamples))
+    print("Dimensions: " + str(slide.dimensions))
+    objective_power = int(
+        slide.properties[openslide.PROPERTY_NAME_OBJECTIVE_POWER])
+    print("Objective power: " + str(objective_power))
+    print("Associated images:")
+    for ai_key in slide.associated_images.keys():
+        print("  " + str(ai_key) + ": " +
+              str(slide.associated_images.get(ai_key)))
+    print("Format: " + str(slide.detect_format(slide_filepath)))
+    print("Properties:")
+    for prop_key in slide.properties.keys():
+        print("  Property: " + str(prop_key) + ", value: " +
+              str(slide.properties.get(prop_key)))
 
 # if __name__ == "__main__":
     # show_slide(2)

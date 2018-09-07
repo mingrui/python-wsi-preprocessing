@@ -8,5 +8,5 @@ docs/_site
 **/filters*.html
 **/tiles*.html
 /IDH_sample
-.ipynb_checkpoints
+.ipynb_checkpoints/
 patch*

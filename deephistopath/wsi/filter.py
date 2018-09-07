@@ -1378,6 +1378,48 @@ def apply_filters_to_image(slide_num, save=True, display=False):
     return filtered_np_img, info
 
 
+def apply_filters_to_image(img_path, slide_num, save=True, display=False):
+    """
+    Apply a set of filters to an image and optionally save and/or display filtered images.
+
+    Args:
+      slide_num: The slide number.
+      save: If True, save filtered images.
+      display: If True, display filtered images to screen.
+
+    Returns:
+      Tuple consisting of 1) the resulting filtered image as a NumPy array, and 2) dictionary of image information
+      (used for HTML page generation).
+    """
+    t = Time()
+    print("Processing slide #%d" % slide_num)
+
+    info = dict()
+
+    if save and not os.path.exists(slide.FILTER_DIR):
+        os.makedirs(slide.FILTER_DIR)
+    np_orig = slide.open_image_np(img_path)
+    filtered_np_img = apply_image_filters(
+        np_orig, slide_num, info, save=save, display=display)
+
+    if save:
+        t1 = Time()
+        result_path = slide.get_filter_image_result(slide_num)
+        pil_img = util.np_to_pil(filtered_np_img)
+        pil_img.save(result_path)
+        print("%-20s | Time: %-14s  Name: %s" %
+              ("Save Image", str(t1.elapsed()), result_path))
+
+        t1 = Time()
+        thumbnail_path = slide.get_filter_thumbnail_result(slide_num)
+        slide.save_thumbnail(pil_img, slide.THUMBNAIL_SIZE, thumbnail_path)
+        print("%-20s | Time: %-14s  Name: %s" %
+              ("Save Thumbnail", str(t1.elapsed()), thumbnail_path))
+
+    print("Slide #%03d processing time: %s\n" % (slide_num, str(t.elapsed())))
+
+    return filtered_np_img, info
+
 def save_display(
         save,
         display,
