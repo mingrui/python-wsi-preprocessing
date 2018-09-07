@@ -33,7 +33,7 @@ BASE_DIR = os.path.join(
     "/media/disk1/mingrui-projects/python-wsi-preprocessing",
     "IDH_sample")
 # BASE_DIR = os.path.join(os.sep, "Volumes", "BigData", "TUPAC")
-TRAIN_PREFIX = "TUPAC-TR-"
+TRAIN_PREFIX = ""
 SRC_TRAIN_DIR = os.path.join(BASE_DIR, "training_image_data")
 SRC_TRAIN_EXT = "svs"
 DEST_TRAIN_SUFFIX = ""  # Example: "train-"
@@ -43,26 +43,21 @@ DEST_TRAIN_DIR = os.path.join(BASE_DIR, "training_" + DEST_TRAIN_EXT)
 THUMBNAIL_SIZE = 300
 THUMBNAIL_EXT = "jpg"
 
-DEST_TRAIN_THUMBNAIL_DIR = os.path.join(
-    BASE_DIR, "training_thumbnail_" + THUMBNAIL_EXT)
+DEST_TRAIN_THUMBNAIL_DIR = os.path.join(BASE_DIR, "training_thumbnail_" + THUMBNAIL_EXT)
 
 FILTER_SUFFIX = ""  # Example: "filter-"
 FILTER_RESULT_TEXT = "filtered"
 FILTER_DIR = os.path.join(BASE_DIR, "filter_" + DEST_TRAIN_EXT)
-FILTER_THUMBNAIL_DIR = os.path.join(
-    BASE_DIR, "filter_thumbnail_" + THUMBNAIL_EXT)
+FILTER_THUMBNAIL_DIR = os.path.join(BASE_DIR, "filter_thumbnail_" + THUMBNAIL_EXT)
 FILTER_PAGINATION_SIZE = 50
 FILTER_PAGINATE = True
 FILTER_HTML_DIR = BASE_DIR
 
 TILE_SUMMARY_DIR = os.path.join(BASE_DIR, "tile_summary_" + DEST_TRAIN_EXT)
-TILE_SUMMARY_ON_ORIGINAL_DIR = os.path.join(
-    BASE_DIR, "tile_summary_on_original_" + DEST_TRAIN_EXT)
+TILE_SUMMARY_ON_ORIGINAL_DIR = os.path.join(BASE_DIR, "tile_summary_on_original_" + DEST_TRAIN_EXT)
 TILE_SUMMARY_SUFFIX = "tile_summary"
-TILE_SUMMARY_THUMBNAIL_DIR = os.path.join(
-    BASE_DIR, "tile_summary_thumbnail_" + THUMBNAIL_EXT)
-TILE_SUMMARY_ON_ORIGINAL_THUMBNAIL_DIR = os.path.join(
-    BASE_DIR, "tile_summary_on_original_thumbnail_" + THUMBNAIL_EXT)
+TILE_SUMMARY_THUMBNAIL_DIR = os.path.join(BASE_DIR, "tile_summary_thumbnail_" + THUMBNAIL_EXT)
+TILE_SUMMARY_ON_ORIGINAL_THUMBNAIL_DIR = os.path.join(BASE_DIR, "tile_summary_on_original_thumbnail_" + THUMBNAIL_EXT)
 TILE_SUMMARY_PAGINATION_SIZE = 50
 TILE_SUMMARY_PAGINATE = True
 TILE_SUMMARY_HTML_DIR = BASE_DIR
@@ -90,6 +85,7 @@ TILE_SUFFIX = "tile"
 
 STATS_DIR = os.path.join(BASE_DIR, "svs_stats")
 
+SLIDE_NAMES = []
 
 def open_slide(filename):
     """
@@ -162,6 +158,10 @@ def get_training_slide_path(slide_number):
     print(slide_filepath)
     return slide_filepath
 
+def get_training_slide_path_from_list(slide_number):
+    slide_filepath = os.path.join(SRC_TRAIN_DIR ,SLIDE_NAMES[slide_number-1])
+    print(slide_filepath)
+    return slide_filepath
 
 def get_tile_image_path(tile):
     """
@@ -875,7 +875,7 @@ def slide_to_scaled_pil_image(slide_number):
     Returns:
       Tuple consisting of scaled-down PIL image, original width, original height, new width, and new height.
     """
-    slide_filepath = get_training_slide_path(slide_number)
+    slide_filepath = get_training_slide_path_from_list(slide_number)
     print("Opening Slide #%d: %s" % (slide_number, slide_filepath))
     slide = open_slide(slide_filepath)
 
@@ -967,6 +967,7 @@ def get_num_training_slides():
     Returns:
       The total number of WSI training slide images.
     """
+    print(SRC_TRAIN_DIR)
     num_training_slides = len(glob.glob1(SRC_TRAIN_DIR, "*." + SRC_TRAIN_EXT))
     return num_training_slides
 

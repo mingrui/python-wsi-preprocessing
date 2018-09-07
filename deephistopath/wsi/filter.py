@@ -1378,7 +1378,7 @@ def apply_filters_to_image(slide_num, save=True, display=False):
     return filtered_np_img, info
 
 
-def apply_filters_to_image(img_path, slide_num, save=True, display=False):
+def apply_filters_to_image(slide_num, save=True, display=False):
     """
     Apply a set of filters to an image and optionally save and/or display filtered images.
 
@@ -1398,6 +1398,7 @@ def apply_filters_to_image(img_path, slide_num, save=True, display=False):
 
     if save and not os.path.exists(slide.FILTER_DIR):
         os.makedirs(slide.FILTER_DIR)
+    img_path = slide.get_training_image_path(slide_num)
     np_orig = slide.open_image_np(img_path)
     filtered_np_img = apply_image_filters(
         np_orig, slide_num, info, save=save, display=display)

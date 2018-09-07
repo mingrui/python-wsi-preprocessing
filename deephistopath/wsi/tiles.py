@@ -710,7 +710,7 @@ def tile_to_pil_tile(tile):
       Tile as a PIL image.
     """
     t = tile
-    slide_filepath = slide.get_training_slide_path(t.slide_num)
+    slide_filepath = slide.get_training_slide_path_from_list(t.slide_num)
     s = slide.open_slide(slide_filepath)
 
     x, y = t.o_c_s, t.o_r_s
