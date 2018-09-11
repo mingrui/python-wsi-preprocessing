@@ -151,7 +151,8 @@ def get_training_slide_path(slide_number):
     padded_sl_num = str(slide_number).zfill(3)
     slide_filepath = os.path.join(
         SRC_TRAIN_DIR,
-        TRAIN_PREFIX +
+        SLIDE_NAMES[slide_number-1] +
+        "-" +
         padded_sl_num +
         "." +
         SRC_TRAIN_EXT)
@@ -178,8 +179,11 @@ def get_tile_image_path(tile):
     padded_sl_num = str(t.slide_num).zfill(3)
     tile_path = os.path.join(
         TILE_DIR,
+        SLIDE_NAMES[t.slide_num-1] +
+        "-" +
         padded_sl_num,
-        TRAIN_PREFIX +
+        SLIDE_NAMES[t.slide_num-1] +
+        "-" +
         padded_sl_num +
         "-" +
         TILE_SUFFIX +
@@ -213,7 +217,8 @@ def get_tile_image_path_by_slide_row_col(slide_number, row, col):
     wilcard_path = os.path.join(
         TILE_DIR,
         padded_sl_num,
-        TRAIN_PREFIX +
+        SLIDE_NAMES[slide_number-1] +
+        "-" +
         padded_sl_num +
         "-" +
         TILE_SUFFIX +
@@ -252,7 +257,8 @@ def get_training_image_path(
     if large_w is None and large_h is None and small_w is None and small_h is None:
         wildcard_path = os.path.join(
             DEST_TRAIN_DIR,
-            TRAIN_PREFIX +
+            SLIDE_NAMES[slide_number-1] +
+            "-" +
             padded_sl_num +
             "*." +
             DEST_TRAIN_EXT)
@@ -260,7 +266,8 @@ def get_training_image_path(
     else:
         img_path = os.path.join(
             DEST_TRAIN_DIR,
-            TRAIN_PREFIX +
+            SLIDE_NAMES[slide_number-1] +
+            "-" +
             padded_sl_num +
             "-" +
             str(SCALE_FACTOR) +
@@ -305,7 +312,8 @@ def get_training_thumbnail_path(
     if large_w is None and large_h is None and small_w is None and small_h is None:
         wilcard_path = os.path.join(
             DEST_TRAIN_THUMBNAIL_DIR,
-            TRAIN_PREFIX +
+            SLIDE_NAMES[slide_number-1] +
+            "-" +
             padded_sl_num +
             "*." +
             THUMBNAIL_EXT)
@@ -313,7 +321,8 @@ def get_training_thumbnail_path(
     else:
         img_path = os.path.join(
             DEST_TRAIN_THUMBNAIL_DIR,
-            TRAIN_PREFIX +
+            SLIDE_NAMES[slide_number-1] +
+            "-" +
             padded_sl_num +
             "-" +
             str(SCALE_FACTOR) +
@@ -413,7 +422,7 @@ def get_filter_image_filename(
         ext = DEST_TRAIN_EXT
     padded_sl_num = str(slide_number).zfill(3)
     padded_fi_num = str(filter_number).zfill(3)
-    img_filename = TRAIN_PREFIX + padded_sl_num + "-" + padded_fi_num + \
+    img_filename = SLIDE_NAMES[slide_number-1] + "-" + padded_sl_num + "-" + padded_fi_num + \
         "-" + FILTER_SUFFIX + filter_name_info + "." + ext
     return img_filename
 
@@ -573,7 +582,7 @@ def get_tile_summary_image_filename(slide_number, thumbnail=False):
     training_img_path = get_training_image_path(slide_number)
     large_w, large_h, small_w, small_h = parse_dimensions_from_image_filename(
         training_img_path)
-    img_filename = TRAIN_PREFIX + padded_sl_num + "-" + str(SCALE_FACTOR) + "x-" + str(large_w) + "x" + str(
+    img_filename = SLIDE_NAMES[slide_number-1] + "-" + padded_sl_num + "-" + str(SCALE_FACTOR) + "x-" + str(large_w) + "x" + str(
         large_h) + "-" + str(small_w) + "x" + str(small_h) + "-" + TILE_SUMMARY_SUFFIX + "." + ext
 
     return img_filename
@@ -603,7 +612,7 @@ def get_top_tiles_image_filename(slide_number, thumbnail=False):
     training_img_path = get_training_image_path(slide_number)
     large_w, large_h, small_w, small_h = parse_dimensions_from_image_filename(
         training_img_path)
-    img_filename = TRAIN_PREFIX + padded_sl_num + "-" + str(SCALE_FACTOR) + "x-" + str(large_w) + "x" + str(
+    img_filename = SLIDE_NAMES[slide_number-1] + "-" + padded_sl_num + "-" + str(SCALE_FACTOR) + "x-" + str(large_w) + "x" + str(
         large_h) + "-" + str(small_w) + "x" + str(small_h) + "-" + TOP_TILES_SUFFIX + "." + ext
 
     return img_filename
@@ -670,7 +679,7 @@ def get_tile_data_filename(slide_number):
     training_img_path = get_training_image_path(slide_number)
     large_w, large_h, small_w, small_h = parse_dimensions_from_image_filename(
         training_img_path)
-    data_filename = TRAIN_PREFIX + padded_sl_num + "-" + str(SCALE_FACTOR) + "x-" + str(large_w) + "x" + str(
+    data_filename = SLIDE_NAMES[slide_number-1] + "-" + padded_sl_num + "-" + str(SCALE_FACTOR) + "x-" + str(large_w) + "x" + str(
         large_h) + "-" + str(small_w) + "x" + str(small_h) + "-" + TILE_DATA_SUFFIX + ".csv"
 
     return data_filename
@@ -716,7 +725,8 @@ def get_filter_image_result(slide_number):
         training_img_path)
     img_path = os.path.join(
         FILTER_DIR,
-        TRAIN_PREFIX +
+        SLIDE_NAMES[slide_number-1] +
+        "-" +
         padded_sl_num +
         "-" +
         str(SCALE_FACTOR) +
@@ -755,7 +765,8 @@ def get_filter_thumbnail_result(slide_number):
         training_img_path)
     img_path = os.path.join(
         FILTER_THUMBNAIL_DIR,
-        TRAIN_PREFIX +
+        SLIDE_NAMES[slide_number-1] +
+        "-" +
         padded_sl_num +
         "-" +
         str(SCALE_FACTOR) +

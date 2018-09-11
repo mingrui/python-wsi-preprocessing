@@ -27,3 +27,7 @@ See main tutorial [here](./docs/wsi-preprocessing-in-python/index.md).
 
 See main project at [https://github.com/CODAIT/deep-histopath](https://github.com/CODAIT/deep-histopath)
 for more information.
+
+# Mingrui's customization
+
+1. file naming convention is changed to 'filename-filenumber-*'
