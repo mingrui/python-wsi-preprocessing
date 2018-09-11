@@ -58,8 +58,8 @@ FADED_MEDIUM_COLOR = (255, 255, 128)
 FADED_LOW_COLOR = (255, 210, 128)
 FADED_NONE_COLOR = (255, 128, 128)
 
-FONT_PATH = "/usr/share/fonts/truetype/msttcorefonts/Arial_Bold.ttf"
-SUMMARY_TITLE_FONT_PATH = "/usr/share/fonts/truetype/msttcorefonts/Courier_New_Bold.ttf"
+FONT_PATH = "../../Arial_Bold.ttf"
+SUMMARY_TITLE_FONT_PATH = "../../Courier_New_Bold.ttf"
 SUMMARY_TITLE_TEXT_COLOR = (0, 0, 0)
 SUMMARY_TITLE_TEXT_SIZE = 24
 SUMMARY_TILE_TEXT_COLOR = (255, 255, 255)
@@ -72,6 +72,7 @@ TILE_TEXT_H_BORDER = 4
 HSV_PURPLE = 270
 HSV_PINK = 330
 
+ZOOM_LEVEL = 0
 
 def get_num_tiles(rows, cols, row_tile_size, col_tile_size):
     """
@@ -715,7 +716,7 @@ def tile_to_pil_tile(tile):
 
     x, y = t.o_c_s, t.o_r_s
     w, h = t.o_c_e - t.o_c_s, t.o_r_e - t.o_r_s
-    tile_region = s.read_region((x, y), 0, (w, h))
+    tile_region = s.read_region((x, y), ZOOM_LEVEL, (w, h))
     # RGBA to RGB
     pil_img = tile_region.convert("RGB")
     return pil_img
