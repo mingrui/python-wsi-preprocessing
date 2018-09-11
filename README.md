@@ -32,12 +32,12 @@ for more information.
 
 1. file naming convention is changed to 'filename-filenumber-*'
 
-requirements:
-jupyterlab `pip install jupyterlab`
-matplotlib `pip install matplotlib`
-PIL `pip install Pillow`
-openslide `pip install openslide-python`
-py_wsi: pull repo then `python setup.py install`
-scipy: `pip install scipy`
-scikit-image: `pip install scikit-image`
-pandas: `pip install pandas`
+requirements:  
+jupyterlab `pip install jupyterlab`  
+matplotlib `pip install matplotlib`  
+PIL `pip install Pillow`  
+openslide `pip install openslide-python`  
+py_wsi: pull repo then `python setup.py install`  
+scipy: `pip install scipy`  
+scikit-image: `pip install scikit-image`  
+pandas: `pip install pandas`  
