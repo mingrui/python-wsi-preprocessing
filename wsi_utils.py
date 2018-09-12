@@ -7,6 +7,63 @@ import deephistopath.wsi.filter as filter
 import deephistopath.wsi.tiles as tiles
 
 
+def slide_variable_setup(base_dir, turtle_files, output_dir):
+    slide.BASE_DIR = base_dir
+
+    slide.SRC_TRAIN_DIR = slide.BASE_DIR
+    slide.DEST_TRAIN_DIR = os.path.join(
+        output_dir, "training_" + slide.DEST_TRAIN_EXT)
+    slide.DEST_TRAIN_THUMBNAIL_DIR = os.path.join(
+        output_dir, "training_thumbnail_" + slide.THUMBNAIL_EXT)
+    slide.FILTER_DIR = os.path.join(
+        output_dir, "filter_" + slide.DEST_TRAIN_EXT)
+    slide.FILTER_THUMBNAIL_DIR = os.path.join(
+        output_dir, "filter_thumbnail_" + slide.THUMBNAIL_EXT)
+    slide.TILE_SUMMARY_DIR = os.path.join(
+        output_dir, "tile_summary_" + slide.DEST_TRAIN_EXT)
+    slide.TILE_SUMMARY_ON_ORIGINAL_DIR = os.path.join(
+        output_dir, "tile_summary_on_original_" + slide.DEST_TRAIN_EXT)
+    slide.TILE_SUMMARY_THUMBNAIL_DIR = os.path.join(
+        output_dir, "tile_summary_thumbnail_" + slide.THUMBNAIL_EXT)
+    slide.TILE_SUMMARY_ON_ORIGINAL_THUMBNAIL_DIR = os.path.join(
+        output_dir, "tile_summary_on_original_thumbnail_" + slide.THUMBNAIL_EXT)
+    slide.TILE_SUMMARY_HTML_DIR = output_dir
+    slide.TILE_DATA_DIR = os.path.join(output_dir, "tile_data")
+    slide.TOP_TILES_DIR = os.path.join(
+        output_dir,
+        slide.TOP_TILES_SUFFIX +
+        "_" +
+        slide.DEST_TRAIN_EXT)
+    slide.TOP_TILES_THUMBNAIL_DIR = os.path.join(
+        output_dir,
+        slide.TOP_TILES_SUFFIX +
+        "_thumbnail_" +
+        slide.THUMBNAIL_EXT)
+    slide.TOP_TILES_ON_ORIGINAL_DIR = os.path.join(
+        output_dir,
+        slide.TOP_TILES_SUFFIX +
+        "_on_original_" +
+        slide.DEST_TRAIN_EXT)
+    slide.TOP_TILES_ON_ORIGINAL_THUMBNAIL_DIR = os.path.join(
+        output_dir,
+        slide.TOP_TILES_SUFFIX +
+        "_on_original_thumbnail_" +
+        slide.THUMBNAIL_EXT)
+    slide.TILE_DIR = os.path.join(
+        output_dir,
+        "tiles_" + slide.DEST_TRAIN_EXT)
+    slide.STATS_DIR = os.path.join(output_dir, "svs_stats")
+
+    slide.SLIDE_NAMES = turtle_files
+    # slide.TRAIN_PREFIX = output_prefix
+
+
+def tile_variable_setup(tile_size, zoom_level):
+    tiles.ROW_TILE_SIZE = tile_size
+    tiles.COL_TILE_SIZE = tile_size
+    tiles.ZOOM_LEVEL = zoom_level
+
+
 def multiprocessing_pipeline(base_dir, turtle_files, tile_size=1024, zoom_level=0):
     """
     Call wsi-preprocessing multiprocess pipeline to work on specified folder
@@ -18,58 +75,8 @@ def multiprocessing_pipeline(base_dir, turtle_files, tile_size=1024, zoom_level=
         zoom_level: zoom level of tile / patch, 0 would be lowest zoom level (ie. largest zoom)
                     at zoom_level 2, details are usually barely visible
     """
-    slide.BASE_DIR = base_dir
-
-    slide.SRC_TRAIN_DIR = slide.BASE_DIR
-    slide.DEST_TRAIN_DIR = os.path.join(
-        slide.BASE_DIR, "training_" + slide.DEST_TRAIN_EXT)
-    slide.DEST_TRAIN_THUMBNAIL_DIR = os.path.join(
-        slide.BASE_DIR, "training_thumbnail_" + slide.THUMBNAIL_EXT)
-    slide.FILTER_DIR = os.path.join(
-        slide.BASE_DIR, "filter_" + slide.DEST_TRAIN_EXT)
-    slide.FILTER_THUMBNAIL_DIR = os.path.join(
-        slide.BASE_DIR, "filter_thumbnail_" + slide.THUMBNAIL_EXT)
-    slide.TILE_SUMMARY_DIR = os.path.join(
-        slide.BASE_DIR, "tile_summary_" + slide.DEST_TRAIN_EXT)
-    slide.TILE_SUMMARY_ON_ORIGINAL_DIR = os.path.join(
-        slide.BASE_DIR, "tile_summary_on_original_" + slide.DEST_TRAIN_EXT)
-    slide.TILE_SUMMARY_THUMBNAIL_DIR = os.path.join(
-        slide.BASE_DIR, "tile_summary_thumbnail_" + slide.THUMBNAIL_EXT)
-    slide.TILE_SUMMARY_ON_ORIGINAL_THUMBNAIL_DIR = os.path.join(
-        slide.BASE_DIR, "tile_summary_on_original_thumbnail_" + slide.THUMBNAIL_EXT)
-    slide.TILE_SUMMARY_HTML_DIR = slide.BASE_DIR
-    slide.TILE_DATA_DIR = os.path.join(slide.BASE_DIR, "tile_data")
-    slide.TOP_TILES_DIR = os.path.join(
-        slide.BASE_DIR,
-        slide.TOP_TILES_SUFFIX +
-        "_" +
-        slide.DEST_TRAIN_EXT)
-    slide.TOP_TILES_THUMBNAIL_DIR = os.path.join(
-        slide.BASE_DIR,
-        slide.TOP_TILES_SUFFIX +
-        "_thumbnail_" +
-        slide.THUMBNAIL_EXT)
-    slide.TOP_TILES_ON_ORIGINAL_DIR = os.path.join(
-        slide.BASE_DIR,
-        slide.TOP_TILES_SUFFIX +
-        "_on_original_" +
-        slide.DEST_TRAIN_EXT)
-    slide.TOP_TILES_ON_ORIGINAL_THUMBNAIL_DIR = os.path.join(
-        slide.BASE_DIR,
-        slide.TOP_TILES_SUFFIX +
-        "_on_original_thumbnail_" +
-        slide.THUMBNAIL_EXT)
-    slide.TILE_DIR = os.path.join(
-        slide.BASE_DIR,
-        "tiles_" + slide.DEST_TRAIN_EXT)
-    slide.STATS_DIR = os.path.join(slide.BASE_DIR, "svs_stats")
-
-    slide.SLIDE_NAMES = turtle_files
-    # slide.TRAIN_PREFIX = output_prefix
-
-    tiles.ROW_TILE_SIZE = tile_size
-    tiles.COL_TILE_SIZE = tile_size
-    tiles.ZOOM_LEVEL = zoom_level
+    slide_variable_setup(base_dir, turtle_files, base_dir)
+    tile_variable_setup(tile_size, zoom_level)
 
     print('================START================')
     slide.multiprocess_training_slides_to_images()
@@ -78,6 +85,22 @@ def multiprocessing_pipeline(base_dir, turtle_files, tile_size=1024, zoom_level=
     print('=====================================')
     tiles.multiprocess_filtered_images_to_tiles()
     print('=================END=================')
+
+
+def filter_slide_entropy(base_dir, turtle_files):
+    """
+    Filter out slide with very low entropy, for example slides that are outof focus has extremely low
+    overall entropy
+
+    Args:
+        filepath_list: list of file paths to filter
+
+    Returns:
+        low_entropy_list: list of file with low entropy
+    """
+    slide_variable_setup(base_dir, turtle_files, base_dir)
+    slide.multiprocess_training_slides_to_images()
+    filter.multiprocess_apply_filters_to_images(filter_func=filter.apply_entropy_filter)
 
 
 def file_stats(file_dir, file_name):

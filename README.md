@@ -29,9 +29,11 @@ See main project at [https://github.com/CODAIT/deep-histopath](https://github.co
 for more information.
 
 ## Mingrui's customization
-
 file naming convention is changed to 'filename-filenumber-*'  
-add patch size and zoom level adjustment
+add patch size adjustment
+
+## work in progress
+zoom level adjustment
 
 ## requirements:  
 jupyterlab `pip install jupyterlab`  

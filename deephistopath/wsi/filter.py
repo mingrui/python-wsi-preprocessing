@@ -1229,6 +1229,122 @@ def uint8_to_bool(np_img):
     return result
 
 
+def apply_entropy_filter(
+        np_img,
+        slide_num=None,
+        info=None,
+        save=False,
+        display=False):
+    """
+    Apply entropy filter to filter out slides that are out of focus.
+
+    Args:
+        np_img: Image as NumPy array.
+        slide_num: The slide number (used for saving/displaying).
+        info: Dictionary of slide information (used for HTML display).
+        save: If True, save image.
+        display: If True, display image.
+
+    Returns:
+        Resulting filtered image as a NumPy array.
+    """
+    rgb = np_img
+    save_display(save, display, info, rgb, slide_num, 1, "Original", "rgb")
+
+    gray = filter_rgb_to_grayscale(rgb)
+    save_display(save, display, info, gray, slide_num, 2, "Gray", "gray")
+
+    entropy = filter_entropy(gray, output_type="bool")
+    save_display(save, display, info, entropy, slide_num, 3, "Entropy", "entropy")
+
+    mask_not_green = filter_green_channel(rgb)
+    rgb_not_green = util.mask_rgb(rgb, mask_not_green)
+    save_display(
+        save,
+        display,
+        info,
+        rgb_not_green,
+        slide_num,
+        4,
+        "Not Green",
+        "rgb-not-green")
+
+    mask_not_gray = filter_grays(rgb)
+    rgb_not_gray = util.mask_rgb(rgb, mask_not_gray)
+    save_display(
+        save,
+        display,
+        info,
+        rgb_not_gray,
+        slide_num,
+        5,
+        "Not Gray",
+        "rgb-not-gray")
+
+    mask_no_red_pen = filter_red_pen(rgb)
+    rgb_no_red_pen = util.mask_rgb(rgb, mask_no_red_pen)
+    save_display(
+        save,
+        display,
+        info,
+        rgb_no_red_pen,
+        slide_num,
+        6,
+        "No Red Pen",
+        "rgb-no-red-pen")
+
+    mask_no_green_pen = filter_green_pen(rgb)
+    rgb_no_green_pen = util.mask_rgb(rgb, mask_no_green_pen)
+    save_display(
+        save,
+        display,
+        info,
+        rgb_no_green_pen,
+        slide_num,
+        7,
+        "No Green Pen",
+        "rgb-no-green-pen")
+
+    mask_no_blue_pen = filter_blue_pen(rgb)
+    rgb_no_blue_pen = util.mask_rgb(rgb, mask_no_blue_pen)
+    save_display(
+        save,
+        display,
+        info,
+        rgb_no_blue_pen,
+        slide_num,
+        8,
+        "No Blue Pen",
+        "rgb-no-blue-pen")
+
+    mask_gray_green_pens = mask_not_gray & mask_not_green & mask_no_red_pen & mask_no_green_pen & mask_no_blue_pen
+    rgb_gray_green_pens = util.mask_rgb(rgb, mask_gray_green_pens)
+    save_display(
+        save,
+        display,
+        info,
+        rgb_gray_green_pens,
+        slide_num,
+        9,
+        "Not Gray, Not Green, No Pens",
+        "rgb-no-gray-no-green-no-pens")
+
+    mask_remove_small = filter_remove_small_objects(
+        mask_gray_green_pens, min_size=500, output_type="bool")
+    rgb_remove_small = util.mask_rgb(rgb, mask_remove_small)
+    rgb_entropy = util.mask_rgb(rgb_remove_small, entropy)
+    save_display(save, display, info, rgb_entropy, slide_num, 10,
+                 "Not Gray, Not Green, No Pens,\nRemove Small Objects",
+                 "rgb-not-green-not-gray-no-pens-remove-small-entropy")
+
+    # make comparison
+    print(rgb_remove_small.shape)
+    print(rgb_entropy.shape)
+
+    img = rgb_entropy
+    return img
+
+
 def apply_image_filters(
         np_img,
         slide_num=None,
@@ -1334,7 +1450,7 @@ def apply_image_filters(
     return img
 
 
-def apply_filters_to_image(slide_num, save=True, display=False):
+def apply_filters_to_image(slide_num, save=True, display=False, filter_func=apply_image_filters):
     """
     Apply a set of filters to an image and optionally save and/or display filtered images.
 
@@ -1356,51 +1472,7 @@ def apply_filters_to_image(slide_num, save=True, display=False):
         os.makedirs(slide.FILTER_DIR)
     img_path = slide.get_training_image_path(slide_num)
     np_orig = slide.open_image_np(img_path)
-    filtered_np_img = apply_image_filters(
-        np_orig, slide_num, info, save=save, display=display)
-
-    if save:
-        t1 = Time()
-        result_path = slide.get_filter_image_result(slide_num)
-        pil_img = util.np_to_pil(filtered_np_img)
-        pil_img.save(result_path)
-        print("%-20s | Time: %-14s  Name: %s" %
-              ("Save Image", str(t1.elapsed()), result_path))
-
-        t1 = Time()
-        thumbnail_path = slide.get_filter_thumbnail_result(slide_num)
-        slide.save_thumbnail(pil_img, slide.THUMBNAIL_SIZE, thumbnail_path)
-        print("%-20s | Time: %-14s  Name: %s" %
-              ("Save Thumbnail", str(t1.elapsed()), thumbnail_path))
-
-    print("Slide #%03d processing time: %s\n" % (slide_num, str(t.elapsed())))
-
-    return filtered_np_img, info
-
-
-def apply_filters_to_image(slide_num, save=True, display=False):
-    """
-    Apply a set of filters to an image and optionally save and/or display filtered images.
-
-    Args:
-      slide_num: The slide number.
-      save: If True, save filtered images.
-      display: If True, display filtered images to screen.
-
-    Returns:
-      Tuple consisting of 1) the resulting filtered image as a NumPy array, and 2) dictionary of image information
-      (used for HTML page generation).
-    """
-    t = Time()
-    print("Processing slide #%d" % slide_num)
-
-    info = dict()
-
-    if save and not os.path.exists(slide.FILTER_DIR):
-        os.makedirs(slide.FILTER_DIR)
-    img_path = slide.get_training_image_path(slide_num)
-    np_orig = slide.open_image_np(img_path)
-    filtered_np_img = apply_image_filters(
+    filtered_np_img = filter_func(
         np_orig, slide_num, info, save=save, display=display)
 
     if save:
@@ -1684,7 +1756,7 @@ def apply_filters_to_image_list(image_num_list, save, display):
     return image_num_list, html_page_info
 
 
-def apply_filters_to_image_range(start_ind, end_ind, save, display):
+def apply_filters_to_image_range(start_ind, end_ind, save, display, filter_func):
     """
     Apply filters to a range of images.
 
@@ -1700,7 +1772,7 @@ def apply_filters_to_image_range(start_ind, end_ind, save, display):
     """
     html_page_info = dict()
     for slide_num in range(start_ind, end_ind + 1):
-        _, info = apply_filters_to_image(slide_num, save=save, display=display)
+        _, info = apply_filters_to_image(slide_num, save=save, display=display, filter_func=filter_func)
         html_page_info.update(info)
     return start_ind, end_ind, html_page_info
 
@@ -1739,7 +1811,8 @@ def multiprocess_apply_filters_to_images(
         save=True,
         display=False,
         html=True,
-        image_num_list=None):
+        image_num_list=None,
+        filter_func=apply_image_filters):
     """
     Apply a set of filters to all training images using multiple processes (one process per core).
 
@@ -1785,7 +1858,7 @@ def multiprocess_apply_filters_to_images(
                 ": Process slides " +
                 str(sublist))
         else:
-            tasks.append((start_index, end_index, save, display))
+            tasks.append((start_index, end_index, save, display, filter_func))
             if start_index == end_index:
                 print(
                     "Task #" +
