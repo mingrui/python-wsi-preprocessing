@@ -86,6 +86,7 @@ TILE_SUFFIX = "tile"
 STATS_DIR = os.path.join(BASE_DIR, "svs_stats")
 
 SLIDE_NAMES = []
+ENTROPY_STD_DIFF = 0
 
 def open_slide(filename):
     """

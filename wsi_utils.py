@@ -1,4 +1,5 @@
 import os
+import csv
 from matplotlib.pyplot import imshow
 
 import deephistopath.wsi.slide as slide
@@ -101,6 +102,13 @@ def filter_slide_entropy(base_dir, turtle_files):
     slide_variable_setup(base_dir, turtle_files, base_dir)
     slide.multiprocess_training_slides_to_images()
     filter.multiprocess_apply_filters_to_images(filter_func=filter.apply_entropy_filter)
+
+    filter.m_queue.put(None)
+    with open(os.path.join(base_dir, 'low-entropy.csv'), 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['slides with low entropy'])
+        for s in iter(filter.m_queue.get, None):
+            writer.writerow([s])
 
 
 def file_stats(file_dir, file_name):

@@ -19,6 +19,7 @@ import multiprocessing
 import numpy as np
 import os
 import scipy.ndimage.morphology as sc_morph
+import scipy.stats as sc_stats
 import skimage.color as sk_color
 import skimage.exposure as sk_exposure
 import skimage.feature as sk_feature
@@ -31,6 +32,8 @@ from deephistopath.wsi import slide
 from deephistopath.wsi import util
 from deephistopath.wsi.util import Time
 
+m_manager = multiprocessing.Manager()
+m_queue = m_manager.Queue()
 
 def filter_rgb_to_grayscale(np_img, output_type="uint8"):
     """
@@ -1234,7 +1237,8 @@ def apply_entropy_filter(
         slide_num=None,
         info=None,
         save=False,
-        display=False):
+        display=False,
+        m_queue=None):
     """
     Apply entropy filter to filter out slides that are out of focus.
 
@@ -1338,8 +1342,17 @@ def apply_entropy_filter(
                  "rgb-not-green-not-gray-no-pens-remove-small-entropy")
 
     # make comparison
-    print(rgb_remove_small.shape)
-    print(rgb_entropy.shape)
+    base =  mask_remove_small.shape[0] * mask_remove_small.shape[1]
+    mu = mask_remove_small.sum() / base
+    data_point = entropy.sum() / base
+    s = np.random.normal(mu, 0.1, 1000)
+    std = np.std(s)
+    # calculate how many standard deviations the entropy data is from mea
+    diff = (mu - data_point) / std
+
+    print('\nslide entropy diff', diff)
+    if diff > 3:
+        m_queue.put(slide.SLIDE_NAMES[slide_num-1])
 
     img = rgb_entropy
     return img
@@ -1350,7 +1363,8 @@ def apply_image_filters(
         slide_num=None,
         info=None,
         save=False,
-        display=False):
+        display=False,
+        m_queue=None):
     """
     Apply filters to image as NumPy array and optionally save and/or display filtered images.
 
@@ -1450,7 +1464,7 @@ def apply_image_filters(
     return img
 
 
-def apply_filters_to_image(slide_num, save=True, display=False, filter_func=apply_image_filters):
+def apply_filters_to_image(slide_num, save=True, display=False, filter_func=apply_image_filters, m_queue=None):
     """
     Apply a set of filters to an image and optionally save and/or display filtered images.
 
@@ -1473,7 +1487,7 @@ def apply_filters_to_image(slide_num, save=True, display=False, filter_func=appl
     img_path = slide.get_training_image_path(slide_num)
     np_orig = slide.open_image_np(img_path)
     filtered_np_img = filter_func(
-        np_orig, slide_num, info, save=save, display=display)
+        np_orig, slide_num, info, save=save, display=display, m_queue=m_queue)
 
     if save:
         t1 = Time()
@@ -1756,7 +1770,7 @@ def apply_filters_to_image_list(image_num_list, save, display):
     return image_num_list, html_page_info
 
 
-def apply_filters_to_image_range(start_ind, end_ind, save, display, filter_func):
+def apply_filters_to_image_range(start_ind, end_ind, save, display, filter_func, m_queue):
     """
     Apply filters to a range of images.
 
@@ -1772,7 +1786,7 @@ def apply_filters_to_image_range(start_ind, end_ind, save, display, filter_func)
     """
     html_page_info = dict()
     for slide_num in range(start_ind, end_ind + 1):
-        _, info = apply_filters_to_image(slide_num, save=save, display=display, filter_func=filter_func)
+        _, info = apply_filters_to_image(slide_num, save=save, display=display, filter_func=filter_func, m_queue=m_queue)
         html_page_info.update(info)
     return start_ind, end_ind, html_page_info
 
@@ -1858,7 +1872,7 @@ def multiprocess_apply_filters_to_images(
                 ": Process slides " +
                 str(sublist))
         else:
-            tasks.append((start_index, end_index, save, display, filter_func))
+            tasks.append((start_index, end_index, save, display, filter_func, m_queue))
             if start_index == end_index:
                 print(
                     "Task #" +
