@@ -29,9 +29,7 @@ import sys
 import deephistopath.wsi.util as util
 from deephistopath.wsi.util import Time
 
-BASE_DIR = os.path.join(
-    "/media/disk1/mingrui-projects/python-wsi-preprocessing",
-    "IDH_sample")
+BASE_DIR = ''
 # BASE_DIR = os.path.join(os.sep, "Volumes", "BigData", "TUPAC")
 TRAIN_PREFIX = ""
 SRC_TRAIN_DIR = os.path.join(BASE_DIR, "training_image_data")
@@ -980,7 +978,8 @@ def get_num_training_slides():
       The total number of WSI training slide images.
     """
     print(SRC_TRAIN_DIR)
-    num_training_slides = len(glob.glob1(SRC_TRAIN_DIR, "*." + SRC_TRAIN_EXT))
+    #num_training_slides = len(glob.glob1(SRC_TRAIN_DIR, "*." + SRC_TRAIN_EXT))
+    num_training_slides = len(SLIDE_NAMES)
     return num_training_slides
 
 
