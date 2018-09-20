@@ -8,7 +8,7 @@ import deephistopath.wsi.filter as filter
 import deephistopath.wsi.tiles as tiles
 
 
-def slide_variable_setup(wsi_dir, files_list, output_dir):
+def slide_variable_setup(wsi_dir, output_dir, files_path, files_name):
     slide.BASE_DIR = wsi_dir
 
     slide.SRC_TRAIN_DIR = slide.BASE_DIR
@@ -55,7 +55,8 @@ def slide_variable_setup(wsi_dir, files_list, output_dir):
         "tiles_" + slide.DEST_TRAIN_EXT)
     slide.STATS_DIR = os.path.join(output_dir, "svs_stats")
 
-    slide.SLIDE_NAMES = files_list
+    slide.SLIDE_NAMES = files_name
+    slide.SLIDE_PATH = files_path
     # slide.TRAIN_PREFIX = output_prefix
 
 
@@ -66,7 +67,7 @@ def tile_variable_setup(tile_size, zoom_level, num_of_tiles_per_slide):
     tiles.NUM_TOP_TILES = num_of_tiles_per_slide
 
 
-def multiprocessing_pipeline(wsi_dir, output_dir, turtle_files, tile_size, zoom_level, num_tiles):
+def multiprocessing_pipeline(wsi_dir, output_dir, files_path, files_name, tile_size, zoom_level, num_tiles):
     """
     Call wsi-preprocessing multiprocess pipeline to work on specified folder
 
@@ -78,7 +79,7 @@ def multiprocessing_pipeline(wsi_dir, output_dir, turtle_files, tile_size, zoom_
         zoom_level: zoom level of tile / patch, 0 would be lowest zoom level (ie. largest zoom)
                     at zoom_level 2, details are usually barely visible
     """
-    slide_variable_setup(wsi_dir, turtle_files, output_dir)
+    slide_variable_setup(wsi_dir, output_dir, files_path, files_name)
     tile_variable_setup(tile_size, zoom_level, num_tiles)
 
     print('================START================')
@@ -90,7 +91,7 @@ def multiprocessing_pipeline(wsi_dir, output_dir, turtle_files, tile_size, zoom_
     print('=================END=================')
 
 
-def filter_slide_entropy(wsi_dir, output_dir, turtle_files):
+def filter_slide_entropy(wsi_dir, output_dir, files_path, files_name):
     """
     Filter out slide with very low entropy, for example slides that are outof focus has extremely low
     overall entropy
@@ -103,7 +104,7 @@ def filter_slide_entropy(wsi_dir, output_dir, turtle_files):
     Returns:
         low_entropy_list: list of file with low entropy
     """
-    slide_variable_setup(wsi_dir, turtle_files, output_dir)
+    slide_variable_setup(wsi_dir, output_dir, files_path, files_name)
     slide.multiprocess_training_slides_to_images()
     filter.multiprocess_apply_filters_to_images(filter_func=filter.apply_entropy_filter)
 
