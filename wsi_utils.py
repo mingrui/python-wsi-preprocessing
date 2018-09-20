@@ -116,19 +116,31 @@ def filter_slide_entropy(wsi_dir, output_dir, files_path, files_name):
             writer.writerow([s])
 
 
-def file_stats(file_dir, file_name):
+def file_stats(file_path):
     """
-    Print Stats from openslide and py-wsi. Show scaled image at the end.
+    Print stats from openslide and py-wsi. Show scaled image at the end.
 
     Args:
-        file_dir: The directory containing wsi files.
-        file_name: The wsi file name.
+        file_path: wsi file path
     """
     # info 1
     print('Openslide info:\n')
-    slide.single_slide_info(os.path.join(file_dir, file_name))
+    slide.single_slide_info(file_path)
     print('\n\n\n')
     # show image
-    pil_img, large_h, large_w, new_h, new_w = slide.show_scaled_slide_image(
-        os.path.join(file_dir, file_name))
+    pil_img, large_h, large_w, new_h, new_w = slide.show_scaled_slide_image(file_path)
     imshow(pil_img)
+
+
+def turtle_stats(turtle):
+    """
+    Prints stats of turtle file (a py_wsi object)
+
+    Args:
+        py_wsi turtle object
+    """
+    print('\n')
+    print('Total WSI images: {}'.format(turtle.num_files))
+    print('LMDB name: {}'.format(turtle.db_name))
+    print('file names: {}'.format(turtle.files[:5]))
+    print('file paths: {}'.format(turtle.files_path[:5]))

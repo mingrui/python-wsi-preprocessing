@@ -83,6 +83,7 @@ TILE_SUFFIX = "tile"
 
 STATS_DIR = os.path.join(BASE_DIR, "svs_stats")
 
+SLIDE_PATH = []
 SLIDE_NAMES = []
 ENTROPY_STD_DIFF = 0
 
@@ -159,9 +160,8 @@ def get_training_slide_path(slide_number):
     return slide_filepath
 
 def get_training_slide_path_from_list(slide_number):
-    slide_filepath = os.path.join(SRC_TRAIN_DIR ,SLIDE_NAMES[slide_number-1])
-    print(slide_filepath)
-    return slide_filepath
+    #slide_filepath = os.path.join(SRC_TRAIN_DIR ,SLIDE_NAMES[slide_number-1])
+    return SLIDE_PATH[slide_number-1]
 
 def get_tile_image_path(tile):
     """
