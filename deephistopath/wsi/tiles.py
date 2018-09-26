@@ -1134,6 +1134,7 @@ def multiprocess_filtered_images_to_tiles(
 
     print("Time to generate tile previews (multiprocess): %s\n" %
           str(timer.elapsed()))
+    pool.close()
 
 
 def image_row(slide_num, tile_summary, data_link):

@@ -1917,6 +1917,7 @@ def multiprocess_apply_filters_to_images(
 
     print("Time to apply filters to all images (multiprocess): %s\n" %
           str(timer.elapsed()))
+    pool.close()
 
 # if __name__ == "__main__":
 # slide.training_slide_to_image(2)

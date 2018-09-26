@@ -1068,6 +1068,7 @@ def multiprocess_training_slides_to_images():
                 (start_ind, end_ind))
 
     timer.elapsed_display()
+    pool.close()
 
 
 def slide_stats():
