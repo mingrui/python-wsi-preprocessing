@@ -36,8 +36,8 @@ from deephistopath.wsi.util import Time
 TISSUE_HIGH_THRESH = 80
 TISSUE_LOW_THRESH = 10
 
-ROW_TILE_SIZE = 1024
-COL_TILE_SIZE = 1024
+ROW_TILE_SIZE = 512
+COL_TILE_SIZE = 512
 NUM_TOP_TILES = 50
 
 DISPLAY_TILE_SUMMARY_LABELS = False
@@ -1134,7 +1134,6 @@ def multiprocess_filtered_images_to_tiles(
 
     print("Time to generate tile previews (multiprocess): %s\n" %
           str(timer.elapsed()))
-    pool.close()
 
 
 def image_row(slide_num, tile_summary, data_link):

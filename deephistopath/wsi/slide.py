@@ -151,11 +151,11 @@ def get_training_slide_path(slide_number):
     padded_sl_num = str(slide_number).zfill(3)
     slide_filepath = os.path.join(
         SRC_TRAIN_DIR,
-        SLIDE_NAMES[slide_number-1] +
-        "-" +
-        padded_sl_num +
-        "." +
-        SRC_TRAIN_EXT)
+        SLIDE_NAMES[slide_number-1]) #+
+        #"-" +
+        #padded_sl_num +
+        #"." +
+        #SRC_TRAIN_EXT)
     print(slide_filepath)
     return slide_filepath
 

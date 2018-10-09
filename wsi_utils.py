@@ -67,7 +67,7 @@ def tile_variable_setup(tile_size, zoom_level, num_of_tiles_per_slide):
     tiles.NUM_TOP_TILES = num_of_tiles_per_slide
 
 
-def multiprocessing_pipeline(wsi_dir, output_dir, files_path, files_name, tile_size, zoom_level, num_tiles):
+def multiprocessing_pipeline(wsi_dir, output_dir, files_path, files_name, tile_size=512, objective_power=20, num_tiles=50):
     """
     Call wsi-preprocessing multiprocess pipeline to work on specified folder
 
@@ -80,8 +80,9 @@ def multiprocessing_pipeline(wsi_dir, output_dir, files_path, files_name, tile_s
                     at zoom_level 2, details are usually barely visible
     """
     slide_variable_setup(wsi_dir, output_dir, files_path, files_name)
-    tile_variable_setup(tile_size, zoom_level, num_tiles)
+    tile_variable_setup(tile_size, 0, num_tiles)
 
+    slide.slide_info()
     print('================START================')
     slide.multiprocess_training_slides_to_images()
     print('=====================================')

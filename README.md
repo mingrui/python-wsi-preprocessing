@@ -33,7 +33,9 @@ file naming convention is changed to 'filename-filenumber-*'
 add patch size adjustment
 
 ## work in progress
-zoom level adjustment
+magnification / objective_power settings  
+to handle different magnification(usually 10x, 20x, 40x), first generate the highest magnification tiles,
+for example: to generate 20x 512 x 512 patches, first generate 40x 1024 x 1024 patches, then half the patch to 512 x 512.
 
 ## requirements:  
 jupyterlab `pip install jupyterlab`  
