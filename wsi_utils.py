@@ -82,7 +82,8 @@ def multiprocessing_pipeline(wsi_dir, output_dir, files_path, files_name, tile_s
     slide_variable_setup(wsi_dir, output_dir, files_path, files_name)
     tile_variable_setup(tile_size, 0, num_tiles)
 
-    slide.slide_info()
+    # slide_info doesn't support recursive folder search yet
+    #slide.slide_info()
     print('================START================')
     slide.multiprocess_training_slides_to_images()
     print('=====================================')
