@@ -543,7 +543,7 @@ def tile_border(draw, r_s, r_e, c_s, c_e, color, border_size=TILE_BORDER_SIZE):
             [(c_s + x, r_s + x), (c_e - 1 - x, r_e - 1 - x)], outline=color)
 
 
-def save_tile_summary_image(pil_img, slide_num):
+def save_tile_summary_image(pil_img, slide_num, debug_print=False):
     """
     Save a tile summary image and thumbnail to the file system.
 
@@ -554,17 +554,19 @@ def save_tile_summary_image(pil_img, slide_num):
     t = Time()
     filepath = slide.get_tile_summary_image_path(slide_num)
     pil_img.save(filepath)
-    print("%-20s | Time: %-14s  Name: %s" %
-          ("Save Tile Sum", str(t.elapsed()), filepath))
+    if debug_print:
+        print("%-20s | Time: %-14s  Name: %s" %
+              ("Save Tile Sum", str(t.elapsed()), filepath))
 
     t = Time()
     thumbnail_filepath = slide.get_tile_summary_thumbnail_path(slide_num)
     slide.save_thumbnail(pil_img, slide.THUMBNAIL_SIZE, thumbnail_filepath)
-    print("%-20s | Time: %-14s  Name: %s" %
-          ("Save Tile Sum Thumb", str(t.elapsed()), thumbnail_filepath))
+    if debug_print:
+        print("%-20s | Time: %-14s  Name: %s" %
+              ("Save Tile Sum Thumb", str(t.elapsed()), thumbnail_filepath))
 
 
-def save_top_tiles_image(pil_img, slide_num):
+def save_top_tiles_image(pil_img, slide_num, debug_print=False):
     """
     Save a top tiles image and thumbnail to the file system.
 
@@ -575,17 +577,19 @@ def save_top_tiles_image(pil_img, slide_num):
     t = Time()
     filepath = slide.get_top_tiles_image_path(slide_num)
     pil_img.save(filepath)
-    print("%-20s | Time: %-14s  Name: %s" %
-          ("Save Top Tiles Image", str(t.elapsed()), filepath))
+    if debug_print:
+        print("%-20s | Time: %-14s  Name: %s" %
+              ("Save Top Tiles Image", str(t.elapsed()), filepath))
 
     t = Time()
     thumbnail_filepath = slide.get_top_tiles_thumbnail_path(slide_num)
     slide.save_thumbnail(pil_img, slide.THUMBNAIL_SIZE, thumbnail_filepath)
-    print("%-20s | Time: %-14s  Name: %s" %
-          ("Save Top Tiles Thumb", str(t.elapsed()), thumbnail_filepath))
+    if debug_print:
+        print("%-20s | Time: %-14s  Name: %s" %
+              ("Save Top Tiles Thumb", str(t.elapsed()), thumbnail_filepath))
 
 
-def save_tile_summary_on_original_image(pil_img, slide_num):
+def save_tile_summary_on_original_image(pil_img, slide_num, debug_print=False):
     """
     Save a tile summary on original image and thumbnail to the file system.
 
@@ -596,18 +600,20 @@ def save_tile_summary_on_original_image(pil_img, slide_num):
     t = Time()
     filepath = slide.get_tile_summary_on_original_image_path(slide_num)
     pil_img.save(filepath)
-    print("%-20s | Time: %-14s  Name: %s" %
-          ("Save Tile Sum Orig", str(t.elapsed()), filepath))
+    if debug_print:
+        print("%-20s | Time: %-14s  Name: %s" %
+              ("Save Tile Sum Orig", str(t.elapsed()), filepath))
 
     t = Time()
     thumbnail_filepath = slide.get_tile_summary_on_original_thumbnail_path(
         slide_num)
     slide.save_thumbnail(pil_img, slide.THUMBNAIL_SIZE, thumbnail_filepath)
-    print("%-20s | Time: %-14s  Name: %s" %
-          ("Save Tile Sum Orig T", str(t.elapsed()), thumbnail_filepath))
+    if debug_print:
+        print("%-20s | Time: %-14s  Name: %s" %
+              ("Save Tile Sum Orig T", str(t.elapsed()), thumbnail_filepath))
 
 
-def save_top_tiles_on_original_image(pil_img, slide_num):
+def save_top_tiles_on_original_image(pil_img, slide_num, debug_print=False):
     """
     Save a top tiles on original image and thumbnail to the file system.
 
@@ -618,15 +624,17 @@ def save_top_tiles_on_original_image(pil_img, slide_num):
     t = Time()
     filepath = slide.get_top_tiles_on_original_image_path(slide_num)
     pil_img.save(filepath)
-    print("%-20s | Time: %-14s  Name: %s" %
-          ("Save Top Orig", str(t.elapsed()), filepath))
+    if debug_print:
+        print("%-20s | Time: %-14s  Name: %s" %
+              ("Save Top Orig", str(t.elapsed()), filepath))
 
     t = Time()
     thumbnail_filepath = slide.get_top_tiles_on_original_thumbnail_path(
         slide_num)
     slide.save_thumbnail(pil_img, slide.THUMBNAIL_SIZE, thumbnail_filepath)
-    print("%-20s | Time: %-14s  Name: %s" %
-          ("Save Top Orig Thumb", str(t.elapsed()), thumbnail_filepath))
+    if debug_print:
+        print("%-20s | Time: %-14s  Name: %s" %
+              ("Save Top Orig Thumb", str(t.elapsed()), thumbnail_filepath))
 
 
 def summary_and_tiles(
@@ -737,7 +745,7 @@ def tile_to_np_tile(tile):
     return np_img
 
 
-def save_display_tile(tile, save=True, display=False):
+def save_display_tile(tile, save=True, display=False, debug_print=False):
     """
     Save and/or display a tile image.
 
@@ -755,8 +763,9 @@ def save_display_tile(tile, save=True, display=False):
         if not os.path.exists(dir):
             os.makedirs(dir)
         tile_pil_img.save(img_path)
-        print("%-20s | Time: %-14s  Name: %s" %
-              ("Save Tile", str(t.elapsed()), img_path))
+        if debug_print:
+            print("%-20s | Time: %-14s  Name: %s" %
+                  ("Save Tile", str(t.elapsed()), img_path))
 
     if display:
         tile_pil_img.show()

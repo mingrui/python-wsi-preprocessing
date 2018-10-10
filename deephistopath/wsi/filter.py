@@ -1464,7 +1464,7 @@ def apply_image_filters(
     return img
 
 
-def apply_filters_to_image(slide_num, save=True, display=False, filter_func=apply_image_filters, m_queue=None):
+def apply_filters_to_image(slide_num, save=True, display=False, filter_func=apply_image_filters, m_queue=None, debug_print=False):
     """
     Apply a set of filters to an image and optionally save and/or display filtered images.
 
@@ -1500,8 +1500,9 @@ def apply_filters_to_image(slide_num, save=True, display=False, filter_func=appl
         t1 = Time()
         thumbnail_path = slide.get_filter_thumbnail_result(slide_num)
         slide.save_thumbnail(pil_img, slide.THUMBNAIL_SIZE, thumbnail_path)
-        print("%-20s | Time: %-14s  Name: %s" %
-              ("Save Thumbnail", str(t1.elapsed()), thumbnail_path))
+        if debug_print:
+            print("%-20s | Time: %-14s  Name: %s" %
+                  ("Save Thumbnail", str(t1.elapsed()), thumbnail_path))
 
     print("Slide #%03d processing time: %s\n" % (slide_num, str(t.elapsed())))
 
@@ -1627,7 +1628,7 @@ def html_footer():
     return html
 
 
-def save_filtered_image(np_img, slide_num, filter_num, filter_text):
+def save_filtered_image(np_img, slide_num, filter_num, filter_text, debug_print=False):
     """
     Save a filtered image to the file system.
 
@@ -1641,15 +1642,17 @@ def save_filtered_image(np_img, slide_num, filter_num, filter_text):
     filepath = slide.get_filter_image_path(slide_num, filter_num, filter_text)
     pil_img = util.np_to_pil(np_img)
     pil_img.save(filepath)
-    print("%-20s | Time: %-14s  Name: %s" %
-          ("Save Image", str(t.elapsed()), filepath))
+    if debug_print:
+        print("%-20s | Time: %-14s  Name: %s" %
+              ("Save Image", str(t.elapsed()), filepath))
 
     t1 = Time()
     thumbnail_filepath = slide.get_filter_thumbnail_path(
         slide_num, filter_num, filter_text)
     slide.save_thumbnail(pil_img, slide.THUMBNAIL_SIZE, thumbnail_filepath)
-    print("%-20s | Time: %-14s  Name: %s" %
-          ("Save Thumbnail", str(t1.elapsed()), thumbnail_filepath))
+    if debug_print:
+        print("%-20s | Time: %-14s  Name: %s" %
+              ("Save Thumbnail", str(t1.elapsed()), thumbnail_filepath))
 
 
 def generate_filter_html_result(html_page_info):

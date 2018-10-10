@@ -826,7 +826,7 @@ def small_to_large_mapping(small_pixel, large_dimensions):
     return large_x, large_y
 
 
-def training_slide_to_image(slide_number):
+def training_slide_to_image(slide_number, debug_print=False):
     """
     Convert a WSI training slide to a saved scaled-down image in a format such as jpg or png.
 
@@ -839,7 +839,8 @@ def training_slide_to_image(slide_number):
 
     img_path = get_training_image_path(
         slide_number, large_w, large_h, new_w, new_h)
-    print("Saving image to: " + img_path)
+    if debug_print:
+        print("Saving image to: " + img_path)
     if not os.path.exists(DEST_TRAIN_DIR):
         os.makedirs(DEST_TRAIN_DIR)
     img.save(img_path)
@@ -860,8 +861,7 @@ def convert_slide_to_image(slide_path, slide_number):
     img, large_w, large_h, new_w, new_h = show_scaled_slide_image(
         slide_path)
 
-    img_path = get_training_image_path(
-        slide_number, large_w, large_h, new_w, new_h)
+    img_path = get_training_image_path(slide_number, large_w, large_h, new_w, new_h)
     print("Saving image to: " + img_path)
     print(os.path.exists(DEST_TRAIN_DIR))
     if not os.path.exists(DEST_TRAIN_DIR):
@@ -875,7 +875,7 @@ def convert_slide_to_image(slide_path, slide_number):
     return img_path
 
 
-def slide_to_scaled_pil_image(slide_number):
+def slide_to_scaled_pil_image(slide_number, debug_print=False):
     """
     Convert a WSI training slide to a scaled-down PIL image.
 
@@ -886,9 +886,9 @@ def slide_to_scaled_pil_image(slide_number):
       Tuple consisting of scaled-down PIL image, original width, original height, new width, and new height.
     """
     slide_filepath = get_training_slide_path_from_list(slide_number)
-    print("Opening Slide #%d: %s" % (slide_number, slide_filepath))
+    if debug_print:
+        print("Opening Slide #%d: %s" % (slide_number, slide_filepath))
     slide = open_slide(slide_filepath)
-
     large_w, large_h = slide.dimensions
     new_w = math.floor(large_w / SCALE_FACTOR)
     new_h = math.floor(large_h / SCALE_FACTOR)
@@ -1011,7 +1011,7 @@ def singleprocess_training_slides_to_images():
     t.elapsed_display()
 
 
-def multiprocess_training_slides_to_images():
+def multiprocess_training_slides_to_images(debug_print=False):
     """
     Convert all WSI training slides to smaller images using multiple processes (one process per core).
     Each process will process a range of slide numbers.
@@ -1038,20 +1038,21 @@ def multiprocess_training_slides_to_images():
         start_index = int(start_index)
         end_index = int(end_index)
         tasks.append((start_index, end_index))
-        if start_index == end_index:
-            print(
-                "Task #" +
-                str(num_process) +
-                ": Process slide " +
-                str(start_index))
-        else:
-            print(
-                "Task #" +
-                str(num_process) +
-                ": Process slides " +
-                str(start_index) +
-                " to " +
-                str(end_index))
+        if debug_print:
+            if start_index == end_index:
+                print(
+                    "Task #" +
+                    str(num_process) +
+                    ": Process slide " +
+                    str(start_index))
+            else:
+                print(
+                    "Task #" +
+                    str(num_process) +
+                    ": Process slides " +
+                    str(start_index) +
+                    " to " +
+                    str(end_index))
 
     # start tasks
     results = []
@@ -1060,12 +1061,13 @@ def multiprocess_training_slides_to_images():
 
     for result in results:
         (start_ind, end_ind) = result.get()
-        if start_ind == end_ind:
-            print("Done converting slide %d" % start_ind)
-        else:
-            print(
-                "Done converting slides %d through %d" %
-                (start_ind, end_ind))
+        if debug_print:
+            if start_ind == end_ind:
+                print("Done converting slide %d" % start_ind)
+            else:
+                print(
+                    "Done converting slides %d through %d" %
+                    (start_ind, end_ind))
 
     timer.elapsed_display()
     pool.close()
@@ -1239,26 +1241,30 @@ def slide_info(display_all_properties=False):
     obj_pow_other_list = []
     for slide_num in range(1, num_train_images + 1):
         slide_filepath = get_training_slide_path(slide_num)
-        print("\nOpening Slide #%d: %s" % (slide_num, slide_filepath))
+        if display_all_properties:
+            print("\nOpening Slide #%d: %s" % (slide_num, slide_filepath))
         slide = open_slide(slide_filepath)
-        print("Level count: %d" % slide.level_count)
-        print("Level dimensions: " + str(slide.level_dimensions))
-        print("Level downsamples: " + str(slide.level_downsamples))
-        print("Dimensions: " + str(slide.dimensions))
+        if display_all_properties:
+            print("Level count: %d" % slide.level_count)
+            print("Level dimensions: " + str(slide.level_dimensions))
+            print("Level downsamples: " + str(slide.level_downsamples))
+            print("Dimensions: " + str(slide.dimensions))
         objective_power = int(
             slide.properties[openslide.PROPERTY_NAME_OBJECTIVE_POWER])
-        print("Objective power: " + str(objective_power))
+        if display_all_properties:
+            print("Objective power: " + str(objective_power))
         if objective_power == 20:
             obj_pow_20_list.append(slide_num)
         elif objective_power == 40:
             obj_pow_40_list.append(slide_num)
         else:
             obj_pow_other_list.append(slide_num)
-        print("Associated images:")
-        for ai_key in slide.associated_images.keys():
-            print("  " + str(ai_key) + ": " +
-                  str(slide.associated_images.get(ai_key)))
-        print("Format: " + str(slide.detect_format(slide_filepath)))
+        if display_all_properties:
+            print("Associated images:")
+            for ai_key in slide.associated_images.keys():
+                print("  " + str(ai_key) + ": " +
+                    str(slide.associated_images.get(ai_key)))
+            print("Format: " + str(slide.detect_format(slide_filepath)))
         if display_all_properties:
             print("Properties:")
             for prop_key in slide.properties.keys():

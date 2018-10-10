@@ -57,7 +57,7 @@ def np_to_pil(np_img):
     return Image.fromarray(np_img)
 
 
-def np_info(np_arr, name=None, elapsed=None):
+def np_info(np_arr, name=None, elapsed=None, debug_print=False):
     """
     Display information (shape, type, max, min, etc) about a NumPy array.
 
@@ -73,8 +73,9 @@ def np_info(np_arr, name=None, elapsed=None):
         elapsed = "---"
 
     if ADDITIONAL_NP_STATS is False:
-        print("%-20s | Time: %-14s  Type: %-7s Shape: %s" %
-              (name, str(elapsed), np_arr.dtype, np_arr.shape))
+        if debug_print:
+            print("%-20s | Time: %-14s  Type: %-7s Shape: %s" %
+                  (name, str(elapsed), np_arr.dtype, np_arr.shape))
     else:
         # np_arr = np.asarray(np_arr)
         max = np_arr.max()
